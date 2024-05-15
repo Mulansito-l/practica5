@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.util.concurrent.TimeUnit;
 
 import javax.swing.JOptionPane;
 
@@ -11,7 +10,10 @@ public class MultiPieceMino{
     private int puntosMax;
     private boolean juegoTerminado;
     private boolean rondaTerminada;
-    private Tablero tablero; 
+    private Tablero tablero;
+    private Pozo pozo;
+    private ArrayList manita;
+    private Ficha unaFicha;
 
     MultiPieceMino(){
         ui = new Interfaz(); 
@@ -19,19 +21,21 @@ public class MultiPieceMino{
         servidor = null;
         cliente = null;
         accionesJugador = new ArrayList<AccionJuego>();
+        manita=new ArrayList<Ficha>();
     } 
 
     public void jugar(){
-        menuPrincipal(); 
+
+        menuPrincipal();
         salaEspera();
-        jugarPartida(); 
+        //jugarPartida();
     }
 
     public void jugarPartida(){
         prepararPartida();
         while (!juegoTerminado) {
             if(cliente.isHost())
-                prepararRonda(); 
+                prepararRonda();
             //jugarRonda();
             //comprobarJuego();
         } 
@@ -52,7 +56,7 @@ public class MultiPieceMino{
          accionesJugador.add(new AccionJuego.AccionSetRondaTerminada(rondaTerminada));
          tablero = new Tablero();
          accionesJugador.add(new AccionJuego.AccionCrearTablero());
-         // Crear pozo
+         pozo=new Pozo();
 
          // Determinar quien empieza
     }
