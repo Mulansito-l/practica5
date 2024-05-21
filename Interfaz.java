@@ -1,5 +1,10 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.datatransfer.Transferable;
+import java.awt.dnd.DragGestureEvent;
+import java.awt.dnd.DragGestureListener;
+import java.awt.dnd.DragSource;
+
 import javax.imageio.ImageIO;
 import java.io.File;
 import java.io.IOException;
@@ -15,10 +20,14 @@ import java.util.*;
 public class Interfaz{
     private MultiPieceMino juego;
     private JFrame mainWindow;
+    private Canvas canvasTablero;
+    private Canvas canvasUI;
+    private boolean esperandoTurno;
 
     public Interfaz(){
         mainWindow = new JFrame("Curly's Multi Piece Mino by Diego Castañeda"); 
         mainWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        esperandoTurno = false;
     }
 
     public void mostrarMenuPrincipal(){
@@ -36,15 +45,21 @@ public class Interfaz{
     }
 
     public void mostrarPantallaJuego(){
-        Canvas canvas;
         try{
-            canvas = new Canvas(10000, 10000,ImageIO.read(new File("recursos/tablero.png")));
+            canvasTablero = new Canvas(10000, 10000,ImageIO.read(new File("recursos/tablero.png")));
+            canvasUI = new Canvas(1920, 1080);
         }catch(IOException e){
             System.out.println(e);
             return; 
         }
-        JScrollPane scrollPane = new JScrollPane(canvas);
-        mainWindow.setContentPane(scrollPane);
+        JScrollPane scrollPane = new JScrollPane(canvasTablero);
+        scrollPane.setBounds(0,0,1920,1080);
+        canvasUI.setBounds(0,0,1900,1060);
+        JLayeredPane layeredPane = new JLayeredPane();
+        layeredPane.setBounds(0,0,1920,1080);
+        layeredPane.add(canvasUI, JLayeredPane.DRAG_LAYER);
+        layeredPane.add(scrollPane, JLayeredPane.DEFAULT_LAYER);
+        mainWindow.setContentPane(layeredPane);
         mainWindow.repaint();
         mainWindow.revalidate();
     }
@@ -62,11 +77,20 @@ public class Interfaz{
         mainWindow.revalidate();
     }
 
+    public Canvas getUICanvas() {
+        return canvasUI;
+    }
+
+    public Canvas getTableroCanvas() {
+        return canvasTablero;
+    }
+
     public class Canvas extends JComponent implements MouseListener, MouseMotionListener{
 
         private List<Object> objects;
         private HashMap<Object, Sprite> sprites;
         private BufferedImage fondo;
+        private boolean listensToMouse;
 
         // Constructor de Canvas, con título, tamaño y color de fondo
         // además se añade un par de Listeners para el uso del cursor
@@ -78,6 +102,20 @@ public class Interfaz{
             this.setVisible(true);
             this.addMouseListener(this);
             this.addMouseMotionListener(this);
+            listensToMouse = true;
+        }
+
+        // Constructor de Canvas, con título, tamaño y color de fondo
+        // además se añade un par de Listeners para el uso del cursor
+        public Canvas(int width, int height){
+            objects = new ArrayList<Object>();
+            sprites = new HashMap<Object, Sprite>();
+            this.fondo = null;
+            this.setPreferredSize(new Dimension(width, height));
+            this.setVisible(true);
+            this.addMouseListener(this);
+            this.addMouseMotionListener(this);
+            listensToMouse = true;
         }
 
         // Método que se encarga de añadir un objeto al
@@ -106,8 +144,8 @@ public class Interfaz{
         public void paint(Graphics g)
         {
             super.paint(g);
-            g.drawImage(fondo, 0, 0,getWidth(),getHeight(), this);
-
+            if(fondo != null)
+                g.drawImage(fondo, 0, 0,getWidth(),getHeight(), this);
             // Aplicación de Lambda en la que se filtran los objetos que tienen
             // tienen sprite y son visibles para dibujarlos posteriormente
             objects.stream().filter(
@@ -121,11 +159,13 @@ public class Interfaz{
         }
 
         public void mousePressed(MouseEvent e) {
-
+            if(listensToMouse)
+                juego.seleccionarFicha(e.getX(), e.getY()); 
         }
 
         public void mouseReleased(MouseEvent e) {
-
+            if(listensToMouse)
+                juego.soltarFicha(e.getX(),e.getY());
         }
 
         public void mouseEntered(MouseEvent e) {
@@ -138,18 +178,23 @@ public class Interfaz{
 
         public void mouseDragged(MouseEvent e)
         {
-
+            if(listensToMouse)
+             juego.arrastrarFicha(e.getX(), e.getY());
         }
 
         public void mouseMoved(MouseEvent e)
         {
-
+            
         }
 
         @Override
         public void mouseClicked(MouseEvent e) 
         {
 
+        }
+
+        public void setListensToMouse(boolean listensToMouse) {
+            this.listensToMouse = listensToMouse;
         }
     }
 
@@ -235,7 +280,27 @@ public class Interfaz{
         }
     } 
 
+    public void esperarTurno(Sprite imagenEspera){
+        if(!esperandoTurno && canvasUI != null){
+            imagenEspera.setVisible(true);
+            canvasUI.draw(imagenEspera, imagenEspera);  
+            canvasUI.setListensToMouse(false);
+            esperandoTurno = !esperandoTurno;
+            actualizar();
+        }else if(esperandoTurno && canvasUI != null){
+            imagenEspera.setVisible(true);
+            canvasUI.erase(imagenEspera);
+            canvasUI.setListensToMouse(true);
+            esperandoTurno = !esperandoTurno;
+            actualizar();
+        }
+    }
+
     public void setJuego(MultiPieceMino juego){
         this.juego = juego; 
+    }
+
+    public void actualizar(){
+        mainWindow.repaint();
     }
 }

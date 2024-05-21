@@ -2,12 +2,17 @@ public class FichaDeTriomino extends Ficha{
     private int ladoC;
 
     FichaDeTriomino (){
-        super  ();
+        super();
         ladoC= rnd.nextInt(6+1);
     }
     FichaDeTriomino(int ladoA,int ladoB,int ladoC){
         super(ladoA,ladoB);
         this.ladoC=ladoC;
+    }
+
+    FichaDeTriomino(FichaDeTriomino ficha){
+        super(ficha);
+        this.ladoC = ficha.ladoC;
     }
     public int getLadoC() {
         return ladoC;
@@ -16,22 +21,15 @@ public class FichaDeTriomino extends Ficha{
     public void setLadoC(int ladoC) {
         this.ladoC = ladoC;
     }
-    public void girarALaDerecha(){
-        int ladoBTemp=ladoB;
 
-        ladoB=ladoA;
-        ladoA=ladoC;
-        ladoC=ladoBTemp;
-
+    public int obtenerSuma(){
+        return ladoA + ladoB + ladoC;
     }
-    public void girarALaIzquierda(){
-        int ladoATemp=ladoA;
 
-        ladoA=ladoB;
-        ladoB=ladoC;
-        ladoC=ladoATemp;
-    }
     public String toString() {
-        return "["+ladoA+" | "+ladoB+" | "+ladoC+"]";
+        if(esVisible())
+            return "["+ladoA+" | "+ladoB+" | "+ladoC+"]";
+        else
+            return "[  |   |  ]";
     }
 }

@@ -1,84 +1,75 @@
-import java.io.EOFException;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.util.ArrayList;
+import java.io.*;
+import java.net.*;
+import java.util.*;
+
+class ClientHandler extends Thread {
+    private Socket clientSocket;
+    private List<ClientHandler> clients;
+    private ObjectOutputStream outputStream;
+
+    public ClientHandler(Socket socket, List<ClientHandler> clients) {
+        this.clientSocket = socket;
+        this.clients = clients;
+    }
+
+    public void run() {
+        try {
+            outputStream = new ObjectOutputStream(clientSocket.getOutputStream());
+            ObjectInputStream inputStream = new ObjectInputStream(clientSocket.getInputStream());
+
+            while (true) {
+                ArrayList<AccionJuego> action = (ArrayList<AccionJuego>) inputStream.readObject();
+                // Broadcast the received action to all other clients
+                broadcast(action);
+            }
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                clientSocket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void broadcast(ArrayList<AccionJuego> action) throws IOException {
+        for (ClientHandler client : clients) {
+            if (client != this) {
+                client.outputStream.writeObject(action);
+                client.outputStream.flush();
+            }
+        }
+    }
+}
 
 public class Servidor {
-    private static final int port = 5258;
+    private static final int PORT = 5258;
     private ServerSocket serverSocket;
-    private Socket socket;
-    private int connectedClients;
-    private ArrayList<Socket> clientes; 
-    private int ultimoJugador; // 0 == HOST, 1 == OTHER PLAYER
-    
-    public Servidor(){
-        try{
-             serverSocket = new ServerSocket(port);
-             clientes = new ArrayList<Socket>();
-             ultimoJugador = 0;
-        }
-        catch(IOException e){
-            System.out.println(e);
-        }
+    private List<ClientHandler> clients;
 
-    }
-    
-    public int getConnectedClients() {
-        return connectedClients;
+    public Servidor() {
+        clients = new ArrayList<>();
     }
 
-    public void startServer(){
-        connectedClients = 0;
-        while(true){
-            try {
-                socket = serverSocket.accept();
-            } catch (IOException e) {
-                System.out.println("I/O error: " + e);
-            }
-            // new thread for a client
-            new Thread(() -> {
-                if(connectedClients == 0){
-                    handleClient(socket, true);
-                }else{
-                    handleClient(socket, false);
-                }
-            }).start(); 
-        }
+    public int getConnectedClients(){
+        return clients.size();
     }
 
-    public void handleClient(Socket client, boolean isHost){
-        connectedClients++;
-        clientes.add(client);
-        System.out.println("Se ha unido un cliente nuevo");
-        try{
-            ObjectInputStream in = new ObjectInputStream(client.getInputStream());
-            while(true){
-                try{
-                    ArrayList<AccionJuego> acciones = (ArrayList<AccionJuego>) in.readObject();
-                    sendActionsToOtherClients(client, acciones);
-                }catch(EOFException e){
-                    
-                }
+    public void start() {
+        try {
+            serverSocket = new ServerSocket(PORT);
+            System.out.println("Servidor iniciado en el puerto: "+ PORT);
+
+            while (true) {
+                Socket clientSocket = serverSocket.accept();
+                System.out.println("Nuevo cliente");
+                ClientHandler clientHandler = new ClientHandler(clientSocket, clients);
+                clients.add(clientHandler);
+                clientHandler.start();
             }
-        }catch(Exception e){
-            System.out.println(e);
-        } 
-    }
-    
-    public void sendActionsToOtherClients(Socket sender, ArrayList<AccionJuego> actions){
-        for (Socket socket : clientes) {
-            try{
-                ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
-                if(socket != sender){
-                    out.writeObject(actions);
-                    out.flush();
-                }
-            }catch(Exception e){
-                System.out.println(e);
-            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }

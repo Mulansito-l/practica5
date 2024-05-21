@@ -9,17 +9,19 @@ public class Cliente {
     private Socket socket;
     private boolean isConnected;
     private boolean isHost;
+    private ObjectOutputStream out;
+    private ObjectInputStream in;
 
     public Cliente(){
+        isConnected = false;
         try {
             socket = new Socket("127.0.0.1", 5258); 
-            isConnected = true; 
+            isConnected = true;
+            out = new ObjectOutputStream(socket.getOutputStream());
         } catch (Exception e) {
             System.out.println(e);
-            isConnected = false;
         }
     }
-
     public void setHost(boolean isHost) {
         this.isHost = isHost;
     }
@@ -34,27 +36,33 @@ public class Cliente {
 
     public void sendActions(ArrayList<AccionJuego> acciones){
         try {
-            ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream()); 
+            out.reset();
             out.writeObject(acciones); 
             out.flush();
             acciones.clear();
         } catch (Exception e) {
-            System.out.println(e);
+            System.out.println("Excepcion en sendActions: " + e);
         }
     }
 
     public ArrayList<AccionJuego> getActions(){
+        if(in == null){
+            try{
+                in = new ObjectInputStream(socket.getInputStream());
+            }catch(IOException e){
+                System.out.println("IOException: " + e);
+            }
+            return null;
+        }
         try {
-            ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
             ArrayList<AccionJuego> acciones = (ArrayList<AccionJuego>) in.readObject();
-            in.close();
             return acciones;
         } catch (EOFException e) {
             return null;
         } catch (IOException e){
-            System.out.println(e);
+            System.out.println("Excepcion en getActions IOException: " + e);
         } catch (ClassNotFoundException e){
-            System.out.println(e);
+            System.out.println("Excepcion en getActions ClassNotFound: " + e);
         }
         return null;
     }
@@ -62,7 +70,6 @@ public class Cliente {
     public void disconnect(){
         try {
             socket.close();
-            
         } catch (Exception e) {
             System.out.println(e);
         }

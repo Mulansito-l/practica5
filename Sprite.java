@@ -1,5 +1,9 @@
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 import javax.imageio.ImageIO;
 
 // La clase Sprite es una forma simplificada
@@ -22,8 +26,14 @@ public class Sprite{
             image = ImageIO.read(new File(imageName));
         }
         catch(Exception e){
-            System.out.println("No se pudo cargar la imagen: " + e.toString());
+            System.out.println("No se pudo cargar la imagen: " + imageName);
         }
+    }
+
+    public Sprite(Sprite sprite){
+        this.xPosition = sprite.xPosition;
+        this.yPosition = sprite.yPosition;
+        this.image = sprite.getImage();
     }
 
     public boolean isVisible() {
@@ -48,6 +58,10 @@ public class Sprite{
         return xPosition;}
     public int getYPosition(){
         return yPosition;}
+    public void setPosition(int x, int y){
+        this.xPosition = x;
+        this.yPosition = y;
+    }
     public void setXPosition(int x){this.xPosition = x;}
     public void setYPosition(int y){this.yPosition = y;}
 }

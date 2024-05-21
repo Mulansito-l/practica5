@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 import java.util.Collections;
 
 public class Pozo {
@@ -11,24 +12,33 @@ public class Pozo {
         fichas=new ArrayList<Ficha>();
         fichas2Lados=new ArrayList<Ficha>();
         fichas3Lados=new ArrayList<FichaDeTriomino>();
+        generarFichasDe2Lados();
+        generarFichasDe3Lados();
+        añadirTodasLasFichasALPozo();
     }
-    public void generarFichasDe2Lados(){
+    private void generarFichasDe2Lados(){
         for (int i = 0; i <= 6; i++) {
             for (int j = i; j <= 6; j++) {
-                fichas2Lados.add(new Ficha(i, j));
+                Ficha ficha = new Ficha(i,j);
+                String imageName = "recursos/di"+i+j+".png";
+                ficha.setImagen(new Sprite(imageName, 0, 0));
+                fichas2Lados.add(ficha);
             }
         }
     }
-    public void generarFichasDe3Lados(){
-        for (int i = 0; i <= 6; i++) {
-            for (int j = i; j <= 6; j++) {
-                for (int k = j; k <= 6; k++) {
-                    fichas3Lados.add(new FichaDeTriomino(i, j, k));
+    private void generarFichasDe3Lados(){
+        for (int i = 0; i <= 5; i++) {
+            for (int j = i; j <= 5; j++) {
+                for (int k = j; k <= 5; k++) {
+                    FichaDeTriomino ficha = new FichaDeTriomino(i,j,k);
+                    String imageName = "recursos/tri"+i+j+k+".png";
+                    ficha.setImagen(new Sprite(imageName, 0, 0));
+                    fichas3Lados.add(ficha);
                 }
             }
         }
     }
-    public void añadirTodasLasFichasALPozo(){
+    private void añadirTodasLasFichasALPozo(){
         generarFichasDe2Lados();
         generarFichasDe3Lados();
 
@@ -54,8 +64,8 @@ public class Pozo {
             System.out.println(ficha);
         }
     }
-    public void mezclarPozo(){
-        Collections.shuffle(fichas);
+    public void mezclarPozo(long seed){
+        Collections.shuffle(fichas, new Random(seed));
     }
     public ArrayList <Ficha> sacarFichasDelPozo(int cantidadDeFichas){
         ArrayList <Ficha> fichasSacadas=new ArrayList<Ficha>();

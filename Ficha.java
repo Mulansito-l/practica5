@@ -1,13 +1,15 @@
 import java.util.Random;
-public class Ficha
-{
+
+public class Ficha implements Movible{
     //Atributos de la ficha
     protected int ladoA;
     protected int ladoB;
     protected boolean esVisible;
     protected boolean esMula=false;
     protected Random rnd= new Random();
-    private int posicionDeFichaX;
+    protected int posX;
+    protected int posY;
+    protected Sprite imagen;
 
     //Constructores
     public Ficha()
@@ -21,26 +23,59 @@ public class Ficha
     }
     public Ficha(int ladoAPersonalizado, int ladoBPersonalizado)
     {
+        posX = 0;
+        posY = 0;
         ladoA=ladoAPersonalizado;
         ladoB=ladoBPersonalizado;
-
         esVisible=true;
-
         if (ladoA==ladoB){
             esMula=true;
         }
     }
-    public int getPosicionDeFichaX(){
-        return posicionDeFichaX;
+
+    public Ficha(Ficha ficha){
+        this.posX = ficha.posX;
+        this.posY = ficha.posY;
+        this.ladoA = ficha.ladoA;
+        this.ladoB = ficha.ladoB;
+        this.esVisible = ficha.esVisible;
+        this.esMula = ficha.esMula;
     }
 
+    public void rotateRight(){
+        
+    }
+
+    public void rotateLeft(){
+        
+    }
+
+    public void setImagen(Sprite imagen) {
+        this.imagen = imagen;
+        this.imagen.changeSize(160);
+    }
+    
+    public void setPos(int x, int y){
+        posX = x;
+        posY = y;
+        imagen.setXPosition(x - 80); 
+        imagen.setYPosition(y - 80);
+    }
+
+    public Sprite getImagen() {
+        return imagen;
+    }
+
+    public int getPosX() {
+        return posX;
+    }
+
+    public int getPosY() {
+        return posY;
+    }
 
     public boolean getEsMula(){
         return esMula;
-    }
-    //Dibujar ficha en el canvas
-    public void setPosicionDeFichaX(int posicion){
-        posicionDeFichaX=posicion;
     }
 
     //Getters y setters
@@ -67,9 +102,11 @@ public class Ficha
     public void voltearFicha(){
         esVisible=!esVisible;
     }
+
     public boolean esVisible(){
         return esVisible;
     }
+
     //Intercambia los valores de los lados de la ficha
     public void girar180Grados() {
         int temp=ladoA;
@@ -80,6 +117,7 @@ public class Ficha
     public int obtenerSuma (){
         return ladoA+ladoB;
     }
+
     public String toString() {
         // si la ficha está volteada regresa 7 espacios
         if (!esVisible) {
