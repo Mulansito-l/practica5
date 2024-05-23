@@ -2,8 +2,13 @@ import java.util.ArrayList;
 
 public class Jugador {
     private ArrayList<Ficha> mano;
-    Jugador(){
+    private int manoMin;
+    private int manoMax;
 
+
+    Jugador(){
+        manoMin = 0;
+        manoMax = 14;
     }
     
     public void setMano(ArrayList<Ficha> mano) {
@@ -17,11 +22,17 @@ public class Jugador {
     public void mostrarMano(boolean isHost, int jugador, Interfaz.Canvas canvasUI){
         if(isHost){
             if(jugador == 0){
-                int posicionInicial = ((mano.size()/2) + (mano.size() % 2)) - mano.size();
-                int xInicial = 1920 / 2;
-                for (Ficha ficha : mano) {
-                    if(ficha instanceof Ficha){
-                        ficha.setPos(xInicial + posicionInicial * 100, 940);
+int posicionInicial; 
+                if (mano.size() < 14) {
+                    posicionInicial = ((mano.size()/2) + (mano.size() % 2)) - mano.size();
+                }else{
+                    posicionInicial = -7; 
+                }
+                int xInicial = 1280 / 2;
+                for(int i = manoMin; i <= manoMax; i++){
+                    if(i < mano.size()){
+                        Ficha ficha = mano.get(i);
+                        ficha.setPos(xInicial + posicionInicial * 50, 650);
                         ficha.getImagen().setVisible(true);
                         canvasUI.draw(ficha, ficha.getImagen());
                         posicionInicial++;
@@ -29,35 +40,59 @@ public class Jugador {
                 } 
             }else{
                 ocultarFichas();
-                int posicionInicial = ((mano.size()/2) + (mano.size() % 2)) - mano.size();
-                int xInicial = 1920 / 2;
-                for (Ficha ficha : mano) {
-                    ficha.setPos(xInicial + posicionInicial * 100, 50); 
-                    ficha.getImagen().setVisible(true);
-                    canvasUI.draw(ficha, ficha.getImagen());
-                    posicionInicial++;
+                int posicionInicial; 
+                if (mano.size() < 14) {
+                    posicionInicial = ((mano.size()/2) + (mano.size() % 2)) - mano.size();
+                }else{
+                    posicionInicial = -7; 
                 }
+                int xInicial = 1280 / 2;
+               for(int i = manoMin; i <= manoMax; i++){
+                    if(i < mano.size()){
+                        Ficha ficha = mano.get(i);
+                        ficha.setPos(xInicial + posicionInicial * 50, 80);
+                        ficha.getImagen().setVisible(true);
+                        canvasUI.draw(ficha, ficha.getImagen());
+                        posicionInicial++;
+                    }
+                } 
             }
         }else{
             if(jugador == 0){
                 ocultarFichas();
-                int posicionInicial = ((mano.size()/2) + (mano.size() % 2)) - mano.size();
-                int xInicial = 1920 / 2;
-                for (Ficha ficha : mano) {
-                    ficha.setPos(xInicial + posicionInicial * 100, 50);    
-                    ficha.getImagen().setVisible(true);
-                    canvasUI.draw(ficha, ficha.getImagen());
-                    posicionInicial++;
+int posicionInicial; 
+                if (mano.size() < 14) {
+                    posicionInicial = ((mano.size()/2) + (mano.size() % 2)) - mano.size();
+                }else{
+                    posicionInicial = -7; 
+                }
+                int xInicial = 1280 / 2;
+               for(int i = manoMin; i <= manoMax; i++){
+                    if(i < mano.size()){
+                        Ficha ficha = mano.get(i);
+                        ficha.setPos(xInicial + posicionInicial * 50, 80);
+                        ficha.getImagen().setVisible(true);
+                        canvasUI.draw(ficha, ficha.getImagen());
+                        posicionInicial++;
+                    }
                 } 
             }else{
-                int posicionInicial = ((mano.size()/2) + (mano.size() % 2)) - mano.size();
-                int xInicial = 1920 / 2;
-                for (Ficha ficha : mano) {
-                    ficha.setPos(xInicial + posicionInicial * 100, 960);    
-                    ficha.getImagen().setVisible(true);
-                    canvasUI.draw(ficha, ficha.getImagen());
-                    posicionInicial++;
-                }  
+                int posicionInicial; 
+                if (mano.size() < 14) {
+                    posicionInicial = ((mano.size()/2) + (mano.size() % 2)) - mano.size();
+                }else{
+                    posicionInicial = -7; 
+                }
+                int xInicial = 1280 / 2;
+                for(int i = manoMin; i <= manoMax; i++){
+                    if(i < mano.size()){
+                        Ficha ficha = mano.get(i);
+                        ficha.setPos(xInicial + posicionInicial * 50, 650);
+                        ficha.getImagen().setVisible(true);
+                        canvasUI.draw(ficha, ficha.getImagen());
+                        posicionInicial++;
+                    }
+                }
             }
         }
     }
@@ -76,5 +111,20 @@ public class Jugador {
                 ficha.voltearFicha();
             }
         });
+    }
+
+    public void moverManoDerecha(){
+        if(manoMax + 1 < mano.size()){
+            manoMax++;
+            manoMin++;
+        }
+    }
+    
+    public void moverManoIzquierda(){
+        if(manoMin - 1 >= 0){
+            manoMin--;
+            if(manoMax > 14)
+                manoMax--;
+        }
     }
 }

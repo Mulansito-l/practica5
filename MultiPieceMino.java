@@ -198,6 +198,9 @@ public class MultiPieceMino{
 
     public void tomarDelPozo(){
         int fichasTomadas = 0;
+        if (jugadorInicial == -1 ) {
+            return;
+        }
         if(tomoDelPozo){
             pasarTurno();
             cliente.sendActions(accionesJugador);
@@ -264,6 +267,11 @@ public class MultiPieceMino{
     public void menuPrincipal(){
         ui.mostrarMenuPrincipal(); 
         while (cliente == null) {
+            if (cliente != null) {
+                while (!cliente.isConnected()) {
+                
+            }
+            }
         }
     }
 
@@ -273,11 +281,13 @@ public class MultiPieceMino{
             servidor.start();
         }).start(); 
         cliente = new Cliente();
+        cliente.connect();
         cliente.setHost(true);
     }
 
     public void crearCliente(){
         cliente = new Cliente(); 
+        cliente.connect();
         cliente.setHost(false); 
     }
 
@@ -382,8 +392,8 @@ public class MultiPieceMino{
     public void seleccionarFicha(int xpos, int ypos){
         Ficha fichaMasCercana = null;
         int indiceFicha = -1;
-        int distanciaX = 61;
-        int distanciaY = 151;
+        int distanciaX = 21;
+        int distanciaY = 101;
         ArrayList<Ficha> mano;
         if(cliente.isHost()){
             mano = jugadores.get(0).getMano();
@@ -490,5 +500,23 @@ public class MultiPieceMino{
             turnoActual = 0;
             accionesJugador.add(new AccionJuego.AccionSetTurno(0));
         }
+    }
+
+    public void recorrerFichasDerecha(){
+        if (cliente.isHost()) {
+            jugadores.get(0).moverManoDerecha();
+        }else {
+            jugadores.get(1).moverManoDerecha();
+        }
+        mostrarManos();
+    }
+
+    public void recorrerFichasIzquierda(){
+if (cliente.isHost()) {
+            jugadores.get(0).moverManoIzquierda();
+        }else {
+            jugadores.get(1).moverManoIzquierda();
+        }
+        mostrarManos();
     }
 }

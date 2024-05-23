@@ -52,14 +52,14 @@ public class Ficha implements Movible{
 
     public void setImagen(Sprite imagen) {
         this.imagen = imagen;
-        this.imagen.changeSize(160);
+        this.imagen.changeSize(100);
     }
     
     public void setPos(int x, int y){
         posX = x;
         posY = y;
-        imagen.setXPosition(x - 80); 
-        imagen.setYPosition(y - 80);
+        imagen.setXPosition(x - 50); 
+        imagen.setYPosition(y - 50);
     }
 
     public Sprite getImagen() {

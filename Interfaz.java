@@ -32,6 +32,8 @@ public class Interfaz{
     public Interfaz(){
         mainWindow = new JFrame("Curly's Multi Piece Mino by Diego Castañeda"); 
         mainWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        mainWindow.setResizable(false);
+        mainWindow.setBounds(0, 0, 1280, 720);
         esperandoTurno = false;
     }
 
@@ -51,17 +53,17 @@ public class Interfaz{
 
     public void mostrarPantallaJuego(){
         try{
-            canvasTablero = new Canvas(1920, 10000,ImageIO.read(new File("recursos/tablero.png")));
-            canvasUI = new Canvas(1920, 1080);
+            canvasTablero = new Canvas(1280, 10000,ImageIO.read(new File("recursos/tablero.png")));
+            canvasUI = new Canvas(1280, 780);
         }catch(IOException e){
             System.out.println(e);
             return; 
         }
         JScrollPane scrollPane = new JScrollPane(canvasTablero);
-        scrollPane.setBounds(0,0,1920,1080);
-        canvasUI.setBounds(0,0,1900,1060);
+        scrollPane.setBounds(0,0,1280,720);
+        canvasUI.setBounds(0,0,1260,700);
         JLayeredPane layeredPane = new JLayeredPane();
-        layeredPane.setBounds(0,0,1920,1080);
+        layeredPane.setBounds(0,0,1280, 720);
         layeredPane.add(canvasUI, JLayeredPane.DRAG_LAYER);
         layeredPane.add(scrollPane, JLayeredPane.DEFAULT_LAYER);
         mainWindow.setContentPane(layeredPane);
@@ -97,6 +99,8 @@ public class Interfaz{
         private BufferedImage fondo;
         private boolean listensToMouse;
         private JButton tomarDelPozo;
+        private JButton recorrerIzquierda;
+        private JButton recorrerDerecha;
 
         // Constructor de Canvas, con título, tamaño y color de fondo
         // además se añade un par de Listeners para el uso del cursor
@@ -122,9 +126,17 @@ public class Interfaz{
             this.addMouseListener(this);
             this.addMouseMotionListener(this);
             tomarDelPozo = new JButton("Tomar del pozo");
-            tomarDelPozo.setBounds(40, 520, 200, 40);
+            recorrerIzquierda = new JButton("<");
+            recorrerDerecha = new JButton(">");
+            tomarDelPozo.setBounds(20, 360, 200, 40);
+            recorrerIzquierda.setBounds(40, 660, 60, 30);
+            recorrerDerecha.setBounds(1150, 660, 60, 30);
             tomarDelPozo.addActionListener(this);
+            recorrerIzquierda.addActionListener(this);
+            recorrerDerecha.addActionListener(this);
             this.add(tomarDelPozo);
+            this.add(recorrerIzquierda);
+            this.add(recorrerDerecha);
             listensToMouse = true;
         }
 
@@ -212,7 +224,13 @@ public class Interfaz{
         public void actionPerformed(ActionEvent e) {
             if(e.getSource() == tomarDelPozo && listensToMouse){
                 juego.tomarDelPozo();
-            } 
+            }
+            if(e.getSource() == recorrerIzquierda && listensToMouse){
+                juego.recorrerFichasIzquierda();
+            }
+            if(e.getSource() == recorrerDerecha && listensToMouse){
+                juego.recorrerFichasDerecha();
+            }
         }
 
         @Override

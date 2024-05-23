@@ -8,7 +8,7 @@ public class Tablero {
 
     public boolean colocarFicha(Ficha ficha){
         if(fichasJugadas.size() == 0){
-            ficha.setPos(960, 540);
+            ficha.setPos(640, 360);
             if (!ficha.esVisible())
                 ficha.voltearFicha();
             fichasJugadas.add(ficha);

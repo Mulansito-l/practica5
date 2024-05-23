@@ -14,14 +14,20 @@ public class Cliente {
 
     public Cliente(){
         isConnected = false;
+    }
+
+    public boolean connect(){
         try {
             socket = new Socket("127.0.0.1", 5258); 
             isConnected = true;
             out = new ObjectOutputStream(socket.getOutputStream());
         } catch (Exception e) {
             System.out.println(e);
+            return false;
         }
+        return true;
     }
+
     public void setHost(boolean isHost) {
         this.isHost = isHost;
     }
