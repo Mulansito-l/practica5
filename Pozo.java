@@ -20,7 +20,7 @@ public class Pozo {
         for (int i = 0; i <= 6; i++) {
             for (int j = i; j <= 6; j++) {
                 Ficha ficha = new Ficha(i,j);
-                String imageName = "recursos/di"+i+j+".png";
+                String imageName = "recursos/Do"+i+j+".png";
                 ficha.setImagen(new Sprite(imageName, 0, 0));
                 fichas2Lados.add(ficha);
             }

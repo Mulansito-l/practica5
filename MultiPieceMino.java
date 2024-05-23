@@ -380,7 +380,7 @@ public class MultiPieceMino{
     public void seleccionarFicha(int xpos, int ypos){
         Ficha fichaMasCercana = null;
         int indiceFicha = -1;
-        int distanciaX = 101;
+        int distanciaX = 61;
         int distanciaY = 151;
         ArrayList<Ficha> mano;
         if(cliente.isHost()){
