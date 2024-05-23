@@ -119,10 +119,6 @@ public class Ficha implements Movible{
     }
 
     public String toString() {
-        // si la ficha está volteada regresa 7 espacios
-        if (!esVisible) {
-            return "[     ]"; // son 7 espacios en blanco
-        }
         // si no está volteada, entonces la regresa como cadena
         return "[" + ladoA + "|" + ladoB + "]";
     }

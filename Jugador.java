@@ -21,7 +21,7 @@ public class Jugador {
                 int xInicial = 1920 / 2;
                 for (Ficha ficha : mano) {
                     if(ficha instanceof Ficha){
-                        ficha.setPos(xInicial + posicionInicial * 100, 880);
+                        ficha.setPos(xInicial + posicionInicial * 100, 940);
                         ficha.getImagen().setVisible(true);
                         canvasUI.draw(ficha, ficha.getImagen());
                         posicionInicial++;
@@ -32,7 +32,7 @@ public class Jugador {
                 int posicionInicial = ((mano.size()/2) + (mano.size() % 2)) - mano.size();
                 int xInicial = 1920 / 2;
                 for (Ficha ficha : mano) {
-                    ficha.setPos(xInicial + posicionInicial * 100, 5); 
+                    ficha.setPos(xInicial + posicionInicial * 100, 50); 
                     ficha.getImagen().setVisible(true);
                     canvasUI.draw(ficha, ficha.getImagen());
                     posicionInicial++;
@@ -44,7 +44,7 @@ public class Jugador {
                 int posicionInicial = ((mano.size()/2) + (mano.size() % 2)) - mano.size();
                 int xInicial = 1920 / 2;
                 for (Ficha ficha : mano) {
-                    ficha.setPos(xInicial + posicionInicial * 100, 5);    
+                    ficha.setPos(xInicial + posicionInicial * 100, 50);    
                     ficha.getImagen().setVisible(true);
                     canvasUI.draw(ficha, ficha.getImagen());
                     posicionInicial++;
@@ -53,7 +53,7 @@ public class Jugador {
                 int posicionInicial = ((mano.size()/2) + (mano.size() % 2)) - mano.size();
                 int xInicial = 1920 / 2;
                 for (Ficha ficha : mano) {
-                    ficha.setPos(xInicial + posicionInicial * 100, 880);    
+                    ficha.setPos(xInicial + posicionInicial * 100, 960);    
                     ficha.getImagen().setVisible(true);
                     canvasUI.draw(ficha, ficha.getImagen());
                     posicionInicial++;

@@ -11,6 +11,11 @@ import java.io.IOException;
 import java.awt.image.BufferedImage;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -46,7 +51,7 @@ public class Interfaz{
 
     public void mostrarPantallaJuego(){
         try{
-            canvasTablero = new Canvas(10000, 10000,ImageIO.read(new File("recursos/tablero.png")));
+            canvasTablero = new Canvas(1920, 10000,ImageIO.read(new File("recursos/tablero.png")));
             canvasUI = new Canvas(1920, 1080);
         }catch(IOException e){
             System.out.println(e);
@@ -85,12 +90,13 @@ public class Interfaz{
         return canvasTablero;
     }
 
-    public class Canvas extends JComponent implements MouseListener, MouseMotionListener{
+    public class Canvas extends JComponent implements MouseListener, MouseMotionListener, ActionListener{
 
         private List<Object> objects;
         private HashMap<Object, Sprite> sprites;
         private BufferedImage fondo;
         private boolean listensToMouse;
+        private JButton tomarDelPozo;
 
         // Constructor de Canvas, con título, tamaño y color de fondo
         // además se añade un par de Listeners para el uso del cursor
@@ -115,6 +121,10 @@ public class Interfaz{
             this.setVisible(true);
             this.addMouseListener(this);
             this.addMouseMotionListener(this);
+            tomarDelPozo = new JButton("Tomar del pozo");
+            tomarDelPozo.setBounds(40, 520, 200, 40);
+            tomarDelPozo.addActionListener(this);
+            this.add(tomarDelPozo);
             listensToMouse = true;
         }
 
@@ -127,6 +137,10 @@ public class Interfaz{
             objects.remove(objectReference);
             objects.add(objectReference);
             sprites.put(objectReference, sprite);
+        }
+
+        public void clearObjects(){
+            objects.clear();
         }
 
         // Método que elimina el objeto dado del HashMap de objetos
@@ -185,6 +199,20 @@ public class Interfaz{
         public void mouseMoved(MouseEvent e)
         {
             
+        }
+
+        public void cambiarTextoTomarDelPozo(boolean tomoDelPozo){
+            if(tomoDelPozo){
+                tomarDelPozo.setText("Pasar turno"); 
+            }else{
+                tomarDelPozo.setText("Tomar del pozo");
+            }
+        }
+
+        public void actionPerformed(ActionEvent e) {
+            if(e.getSource() == tomarDelPozo && listensToMouse){
+                juego.tomarDelPozo();
+            } 
         }
 
         @Override

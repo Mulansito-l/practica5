@@ -8,7 +8,7 @@ public class Tablero {
 
     public boolean colocarFicha(Ficha ficha){
         if(fichasJugadas.size() == 0){
-            ficha.setPos(5000, 5000);
+            ficha.setPos(960, 540);
             if (!ficha.esVisible())
                 ficha.voltearFicha();
             fichasJugadas.add(ficha);
@@ -24,7 +24,7 @@ public class Tablero {
     public void dibujar(Interfaz.Canvas canvasTablero){
         for (Ficha ficha : fichasJugadas) {
             ficha.getImagen().setVisible(true);
-            canvasTablero.draw(ficha, ficha.getImagen()); 
+            canvasTablero.draw(ficha, ficha.getImagen());
         }
     }
 
@@ -46,6 +46,7 @@ public class Tablero {
         Ficha fichaAColocar = jugador.getMano().get(index);
         if(!fichaAColocar.esVisible())
             fichaAColocar.esVisible();
+        fichaAColocar.getImagen().rotate(90);
         fichaAColocar.setPos(masCercana.getPosX() + 80, masCercana.getPosY());
         fichasJugadas.add(fichaAColocar);
         jugador.getMano().remove(fichaAColocar);

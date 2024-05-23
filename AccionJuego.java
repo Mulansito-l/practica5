@@ -156,4 +156,23 @@ public class AccionJuego implements Serializable{
             return puntos;
         }
     }
+
+    public static class AccionTomarDelPozo extends AccionJuego{
+
+        private boolean isHost;
+        private int fichasTomadas;
+
+        AccionTomarDelPozo(boolean isHost, int fichasTomadas){
+            this.isHost = isHost;
+            this.fichasTomadas = fichasTomadas;
+        }
+
+        public boolean isHost() {
+            return isHost;
+        }
+
+        public int getFichasTomadas() {
+            return fichasTomadas;
+        }
+    }
 }

@@ -7,7 +7,7 @@ import java.util.Random;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
-public class MultiPieceMino implements KeyListener{
+public class MultiPieceMino{
     private Interfaz ui;
     private volatile Servidor servidor;
     private volatile Cliente cliente;
@@ -26,6 +26,7 @@ public class MultiPieceMino implements KeyListener{
     private int puntosFichaInicialInvitado;
     private Ficha fichaInicial;
     private int turnoActual;
+    private boolean tomoDelPozo;
 
     MultiPieceMino(){
         ui = new Interfaz(); 
@@ -82,8 +83,20 @@ public class MultiPieceMino implements KeyListener{
                 esperarAccionesOtroJugador();
                 ui.esperarTurno(cuadroEspera);
                 tablero.dibujar(ui.getTableroCanvas());
+                ui.actualizar();
+                mostrarManos(); 
+                System.out.println("Mano Jugador 1: " + jugadores.get(0).getMano());
+                System.out.println("Mano Jugador 2: " + jugadores.get(1).getMano());
+                System.out.println("Tablero" + tablero);
             }
         }
+    }
+
+    public void mostrarManos(){
+        ui.getUICanvas().clearObjects();
+        jugadores.get(0).mostrarMano(cliente.isHost(), 0, ui.getUICanvas());
+        jugadores.get(1).mostrarMano(cliente.isHost(), 1, ui.getUICanvas());
+        ui.getUICanvas().redraw();
     }
 
     public void determinarJugadorInicial(){
@@ -95,8 +108,9 @@ public class MultiPieceMino implements KeyListener{
             jugadores.get(1).hacerVisiblesFichas(); 
             jugadores.get(0).ocultarFichas();
         }
-        jugadores.get(0).mostrarMano(cliente.isHost(), 0, ui.getUICanvas());
-        jugadores.get(1).mostrarMano(cliente.isHost(), 1, ui.getUICanvas());
+        mostrarManos(); 
+        JOptionPane.showMessageDialog(ui.getUICanvas(), 
+                "Elija una ficha y arrastrela al tablero, si su ficha es mayor a la del rival el juego empezará con su ficha");
         if(cliente.isHost()){
             System.out.println("Elija una ficha para empezar");
             esperarAccionesOtroJugador();
@@ -156,9 +170,7 @@ public class MultiPieceMino implements KeyListener{
             cliente.sendActions(accionesJugador);
         }
         tablero.dibujar(ui.getTableroCanvas());
-        jugadores.get(0).mostrarMano(cliente.isHost(), 0, ui.getUICanvas());
-        jugadores.get(1).mostrarMano(cliente.isHost(), 1, ui.getUICanvas());
-        ui.actualizar();
+        mostrarManos();
         System.out.println("TERMINADO DE SELECCIONAR QUIEN EMPIEZA");
         System.out.println("Jugador 1: " + jugadores.get(0).getMano());
         System.out.println("Jugador 2: " + jugadores.get(1).getMano());
@@ -166,6 +178,7 @@ public class MultiPieceMino implements KeyListener{
     } 
 
     public void prepararRonda(){
+        tomoDelPozo = false;
         rondaTerminada = false;
         accionesJugador.add(new AccionJuego.AccionSetRondaTerminada(rondaTerminada));
         tablero = new Tablero();
@@ -179,6 +192,60 @@ public class MultiPieceMino implements KeyListener{
         jugadores.get(1).setMano(pozo.sacarFichasDelPozo(10));
         accionesJugador.add(new AccionJuego.AccionSetManoInicial());
         cliente.sendActions(accionesJugador);
+    }
+
+    public void tomarDelPozo(){
+        int fichasTomadas = 0;
+        if(tomoDelPozo){
+            pasarTurno();
+            cliente.sendActions(accionesJugador);
+            System.out.println("Mandando acciones"); 
+            return;
+        }
+        if(cliente.isHost() && turnoActual == 0){
+            Ficha ficha = pozo.getFicha();
+            System.out.println(ficha);
+            if(ficha != null){
+                jugadores.get(0).getMano().add(ficha);
+                fichasTomadas++;
+            }else{
+                JOptionPane.showMessageDialog(ui.getUICanvas(), "Ya no hay más fichas en el Pozo");
+                return;
+            }
+
+            ficha = pozo.getFicha();
+            System.out.println(ficha);
+            if(ficha != null){
+                jugadores.get(0).getMano().add(ficha);
+                fichasTomadas++;
+            }else{
+                JOptionPane.showMessageDialog(ui.getUICanvas(), "Ya no hay más fichas en el Pozo");
+            }
+        }else if(!cliente.isHost() && turnoActual == 1){
+            Ficha ficha = pozo.getFicha();
+            System.out.println(ficha);
+            if(ficha != null){
+                jugadores.get(1).getMano().add(ficha);
+                fichasTomadas++;
+            }else{
+                JOptionPane.showMessageDialog(ui.getUICanvas(), "Ya no hay más fichas en el Pozo");
+                return;
+            }
+
+            ficha = pozo.getFicha();
+            System.out.println(ficha);
+            if(ficha != null){
+                jugadores.get(1).getMano().add(ficha);
+                fichasTomadas++;
+            }else{
+                JOptionPane.showMessageDialog(ui.getUICanvas(), "Ya no hay más fichas en el Pozo");
+            } 
+        }
+        accionesJugador.add(new AccionJuego.AccionTomarDelPozo(cliente.isHost(), fichasTomadas));
+        tomoDelPozo = true;
+        mostrarManos();
+        ui.getUICanvas().cambiarTextoTomarDelPozo(tomoDelPozo);
+        ui.actualizar();
     }
 
     public void salaEspera(){
@@ -268,12 +335,14 @@ public class MultiPieceMino implements KeyListener{
                     System.out.println("Quitado ficha del Invitado");
                 }else if(a.isHost() && jugadorInicial != -1){
                     tablero.colocarFichaEn(a.getX(), a.getY(), jugadores.get(0), a.getIndex());
-                    jugadores.get(0).mostrarMano(cliente.isHost(), 0, ui.getUICanvas());
-                    jugadores.get(1).mostrarMano(cliente.isHost(), 1, ui.getUICanvas());
+                    mostrarManos();
+                    System.out.println("Mano jugador 1: " + jugadores.get(0).getMano());
+                    System.out.println("Mano jugador 2: " + jugadores.get(1).getMano());
                 }else if(!a.isHost() && jugadorInicial != -1){
                     tablero.colocarFichaEn(a.getX(), a.getY(), jugadores.get(1), a.getIndex());
-                    jugadores.get(0).mostrarMano(cliente.isHost(), 0, ui.getUICanvas());
-                    jugadores.get(1).mostrarMano(cliente.isHost(), 1, ui.getUICanvas());
+                    mostrarManos();
+                    System.out.println("Mano jugador 1: " + jugadores.get(0).getMano());
+                    System.out.println("Mano jugador 2: " + jugadores.get(1).getMano());
                 }
             }else if(accionJuego instanceof AccionJuego.AccionSetPuntosFichaInicialHost a){
                 this.puntosFichaInicialHost = a.getPuntos();
@@ -281,6 +350,29 @@ public class MultiPieceMino implements KeyListener{
                 this.puntosFichaInicialHost = a.getPuntos();
             }else if(accionJuego instanceof AccionJuego.AccionSetTurno a){
                 this.turnoActual = a.getNuevoTurno();
+                ui.getUICanvas().cambiarTextoTomarDelPozo(tomoDelPozo);
+            }else if(accionJuego instanceof AccionJuego.AccionTomarDelPozo a){
+                if(a.isHost()){
+                    Ficha ficha;
+                    if(a.getFichasTomadas() > 0){
+                        ficha = pozo.getFicha();
+                        jugadores.get(0).getMano().add(ficha);
+                    }
+                    if(a.getFichasTomadas() > 1){
+                        ficha = pozo.getFicha();
+                        jugadores.get(0).getMano().add(ficha);
+                    }
+                }else{
+                    Ficha ficha;
+                    if(a.getFichasTomadas() > 0){
+                        ficha = pozo.getFicha();
+                        jugadores.get(1).getMano().add(ficha);
+                    }
+                    if(a.getFichasTomadas() > 1){
+                        ficha = pozo.getFicha();
+                        jugadores.get(1).getMano().add(ficha);
+                    }
+                }
             }
         }
     }
@@ -356,10 +448,14 @@ public class MultiPieceMino implements KeyListener{
                     accionesJugador.add(new AccionJuego.AccionColocarFicha(index
                                 ,cliente.isHost(), pos.x, pos.y, false));
                     jugadores.get(0).getMano().remove(fichaSostenida);
-                    jugadores.get(0).mostrarMano(cliente.isHost(), 0, ui.getUICanvas());
+                    mostrarManos();
                     pasarTurno();
                     cliente.sendActions(accionesJugador);
                     System.out.println("Mandando acciones");
+                }else{
+                    ui.getTableroCanvas().erase(fichaSostenida);
+                    mostrarManos();
+                    ui.actualizar();
                 }
             }
             else{
@@ -368,18 +464,23 @@ public class MultiPieceMino implements KeyListener{
                     accionesJugador.add(new AccionJuego.AccionColocarFicha(index
                                 , cliente.isHost(), pos.x, pos.y, false));
                     jugadores.get(1).getMano().remove(fichaSostenida);
-                    jugadores.get(1).mostrarMano(cliente.isHost(), 1, ui.getUICanvas());
+                    mostrarManos();
                     pasarTurno();
                     cliente.sendActions(accionesJugador);
                     System.out.println("Mandando acciones");
+                }else{
+                    ui.getTableroCanvas().erase(fichaSostenida);
+                    mostrarManos();
+                    ui.actualizar();
                 }
             }
         }
-        ui.actualizar();
         fichaSostenida = null;
     }
 
     public void pasarTurno(){
+        tomoDelPozo = false;
+        ui.getUICanvas().cambiarTextoTomarDelPozo(tomoDelPozo);
         if(turnoActual == 0){
             turnoActual = 1;
             accionesJugador.add(new AccionJuego.AccionSetTurno(1));
@@ -387,23 +488,5 @@ public class MultiPieceMino implements KeyListener{
             turnoActual = 0;
             accionesJugador.add(new AccionJuego.AccionSetTurno(0));
         }
-    }
-
-    @Override
-    public void keyPressed(KeyEvent e) {
-        if(e.getKeyCode() == KeyEvent.VK_RIGHT && fichaSostenida != null){
-            
-        }else if(e.getKeyCode() == KeyEvent.VK_LEFT && fichaSostenida != null){
-            
-        }
-    }
-
-    @Override
-    public void keyReleased(KeyEvent e) {
-        
-    }
-    @Override
-    public void keyTyped(KeyEvent e) {
-        
     }
 }

@@ -27,9 +27,6 @@ public class FichaDeTriomino extends Ficha{
     }
 
     public String toString() {
-        if(esVisible())
-            return "["+ladoA+" | "+ladoB+" | "+ladoC+"]";
-        else
-            return "[  |   |  ]";
+        return "["+ladoA+" | "+ladoB+" | "+ladoC+"]";
     }
 }

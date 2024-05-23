@@ -75,7 +75,15 @@ public class Pozo {
         }
         return fichasSacadas;
     }
+
     public Ficha getFicha(){
-        return fichas.getFirst();
+        Ficha ficha = fichas.get(0);
+        fichas.remove(0);
+        return ficha;
+    }
+
+    @Override
+    public String toString() {
+        return fichas.toString();
     }
 }
