@@ -115,6 +115,8 @@ public class MultiPieceMino{
             System.out.println("Elija una ficha para empezar");
             esperarAccionesOtroJugador();
             ui.esperarTurno(cuadroEspera);
+            System.out.println(puntosFichaInicialHost);
+            System.out.println(puntosFichaInicialInvitado);
             if(puntosFichaInicialHost > puntosFichaInicialInvitado){
                 jugadorInicial = 0;
                 turnoActual = 1;
@@ -347,7 +349,7 @@ public class MultiPieceMino{
             }else if(accionJuego instanceof AccionJuego.AccionSetPuntosFichaInicialHost a){
                 this.puntosFichaInicialHost = a.getPuntos();
             }else if(accionJuego instanceof AccionJuego.AccionSetPuntosFichaInicialInvitado a){
-                this.puntosFichaInicialHost = a.getPuntos();
+                this.puntosFichaInicialInvitado = a.getPuntos();
             }else if(accionJuego instanceof AccionJuego.AccionSetTurno a){
                 this.turnoActual = a.getNuevoTurno();
                 ui.getUICanvas().cambiarTextoTomarDelPozo(tomoDelPozo);

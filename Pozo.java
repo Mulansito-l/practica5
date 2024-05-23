@@ -31,7 +31,7 @@ public class Pozo {
             for (int j = i; j <= 5; j++) {
                 for (int k = j; k <= 5; k++) {
                     FichaDeTriomino ficha = new FichaDeTriomino(i,j,k);
-                    String imageName = "recursos/tri"+i+j+k+".png";
+                    String imageName = "recursos/Tri"+i+j+k+".png";
                     ficha.setImagen(new Sprite(imageName, 0, 0));
                     fichas3Lados.add(ficha);
                 }
