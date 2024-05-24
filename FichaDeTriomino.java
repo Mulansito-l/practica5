@@ -10,12 +10,19 @@ public class FichaDeTriomino extends Ficha{
         super(ladoA,ladoB);
         this.ladoC=ladoC;
         isPointingUp=true;
+        String imageName = "recursos/TriVolteada.png";
+        imagenVolteada = new Sprite(imageName, 0, 0);
+        this.imagenVolteada.changeSize(100);
     }
 
     FichaDeTriomino(FichaDeTriomino ficha){
         super(ficha);
         this.ladoC = ficha.ladoC;
         this.isPointingUp=ficha.isPointingUp;
+        String imageName = "recursos/TriVolteada.png";
+        imagenVolteada = new Sprite(imageName, 0, 0);
+        this.imagenVolteada.changeSize(100);
+
     }
     public int getLadoC() {
         return ladoC;

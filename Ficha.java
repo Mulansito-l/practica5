@@ -10,6 +10,7 @@ public class Ficha implements Movible{
     protected int posX;
     protected int posY;
     protected Sprite imagen;
+    protected Sprite imagenVolteada;
 
     //Constructores
     public Ficha()
@@ -31,6 +32,9 @@ public class Ficha implements Movible{
         if (ladoA==ladoB){
             esMula=true;
         }
+        String imageName = "recursos/DoVolteada.png";
+        this.imagenVolteada= new Sprite(imageName, 0, 0);
+        this.imagenVolteada.changeSize(100);
     }
 
     public Ficha(Ficha ficha){
@@ -40,6 +44,9 @@ public class Ficha implements Movible{
         this.ladoB = ficha.ladoB;
         this.esVisible = ficha.esVisible;
         this.esMula = ficha.esMula;
+        String imageName = "recursos/DoVolteada.png";
+        this.imagenVolteada= new Sprite(imageName, 0, 0);
+        this.imagenVolteada.changeSize(100);
     }
 
     public void rotateRight(){
@@ -66,10 +73,14 @@ public class Ficha implements Movible{
         posY = y;
         imagen.setXPosition(x - 50); 
         imagen.setYPosition(y - 50);
+        imagenVolteada.setXPosition(x - 50); 
+        imagenVolteada.setYPosition(y - 50);
     }
 
     public Sprite getImagen() {
-        return imagen;
+        if(esVisible)
+            return imagen;
+        return imagenVolteada;
     }
 
     public int getPosX() {

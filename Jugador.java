@@ -31,7 +31,7 @@ public class Jugador {
     public void mostrarMano(boolean isHost, int jugador, Interfaz.Canvas canvasUI){
         if(isHost){
             if(jugador == 0){
-int posicionInicial; 
+                int posicionInicial; 
                 if (mano.size() < 14) {
                     posicionInicial = ((mano.size()/2) + (mano.size() % 2)) - mano.size();
                 }else{
@@ -41,7 +41,7 @@ int posicionInicial;
                 for(int i = manoMin; i <= manoMax; i++){
                     if(i < mano.size()){
                         Ficha ficha = mano.get(i);
-                        ficha.setPos(xInicial + posicionInicial * 50, 650);
+                        ficha.setPos(xInicial + posicionInicial * 50, 630);
                         ficha.getImagen().setVisible(true);
                         canvasUI.draw(ficha, ficha.getImagen());
                         posicionInicial++;
@@ -56,10 +56,10 @@ int posicionInicial;
                     posicionInicial = -7; 
                 }
                 int xInicial = 1280 / 2;
-               for(int i = manoMin; i <= manoMax; i++){
+                for(int i = manoMin; i <= manoMax; i++){
                     if(i < mano.size()){
                         Ficha ficha = mano.get(i);
-                        ficha.setPos(xInicial + posicionInicial * 50, 80);
+                        ficha.setPos(xInicial + posicionInicial * 50, 60);
                         ficha.getImagen().setVisible(true);
                         canvasUI.draw(ficha, ficha.getImagen());
                         posicionInicial++;
@@ -69,17 +69,17 @@ int posicionInicial;
         }else{
             if(jugador == 0){
                 ocultarFichas();
-int posicionInicial; 
+                int posicionInicial; 
                 if (mano.size() < 14) {
                     posicionInicial = ((mano.size()/2) + (mano.size() % 2)) - mano.size();
                 }else{
                     posicionInicial = -7; 
                 }
                 int xInicial = 1280 / 2;
-               for(int i = manoMin; i <= manoMax; i++){
+                for(int i = manoMin; i <= manoMax; i++){
                     if(i < mano.size()){
                         Ficha ficha = mano.get(i);
-                        ficha.setPos(xInicial + posicionInicial * 50, 80);
+                        ficha.setPos(xInicial + posicionInicial * 50, 60);
                         ficha.getImagen().setVisible(true);
                         canvasUI.draw(ficha, ficha.getImagen());
                         posicionInicial++;
@@ -96,7 +96,7 @@ int posicionInicial;
                 for(int i = manoMin; i <= manoMax; i++){
                     if(i < mano.size()){
                         Ficha ficha = mano.get(i);
-                        ficha.setPos(xInicial + posicionInicial * 50, 650);
+                        ficha.setPos(xInicial + posicionInicial * 50, 630);
                         ficha.getImagen().setVisible(true);
                         canvasUI.draw(ficha, ficha.getImagen());
                         posicionInicial++;

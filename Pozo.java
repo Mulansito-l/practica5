@@ -14,6 +14,7 @@ public class Pozo {
         fichas3Lados=new ArrayList<FichaDeTriomino>();
         añadirTodasLasFichasALPozo();
     }
+
     private void generarFichasDe2Lados(){
         for (int i = 0; i <= 6; i++) {
             for (int j = i; j <= 6; j++) {
