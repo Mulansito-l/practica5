@@ -51,6 +51,7 @@ public class FichaDeTriomino extends Ficha{
             ladoB= ladoC;
             ladoC=newLadoC;
             isPointingUp=false;
+            //imagen.rotate(59);
         }
         else {
             int newLadoA=ladoB;
@@ -58,6 +59,7 @@ public class FichaDeTriomino extends Ficha{
             ladoB= ladoA;
             ladoA=newLadoA;
             isPointingUp=true;
+            //imagen.rotate(59);
         }
 
     }
@@ -69,6 +71,7 @@ public class FichaDeTriomino extends Ficha{
             ladoB= ladoA;
             ladoA=newLadoA;
             isPointingUp=false;
+            //imagen.rotate(-59);
         }
         else {
             int newLadoC=ladoB;
@@ -76,8 +79,8 @@ public class FichaDeTriomino extends Ficha{
             ladoB= ladoC;
             ladoC=newLadoC;
             isPointingUp=true;
+            //imagen.rotate(-59);
         }
-
     }
 
 

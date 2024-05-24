@@ -60,33 +60,129 @@ public class Tablero {
     private boolean sePudoColocar(Ficha laFichaAColocar, Ficha laFichaPuesta){
 
         if ((laFichaPuesta instanceof FichaDeTriomino)) {
-            // Si ambas son de Triomino y la ficha que está puesta está apuntando hacia arriba
-            if (laFichaAColocar instanceof FichaDeTriomino && ((FichaDeTriomino) laFichaPuesta).getIsPointingUp()) {
-                ((FichaDeTriomino) laFichaAColocar).setIsPointingUp(false);
-                if (laFichaPuesta.getladoA() == ((FichaDeTriomino) laFichaAColocar).getLadoC() && ((FichaDeTriomino) laFichaPuesta).getLadoC() == laFichaAColocar.getladoA()) {
-                    return true;
+            System.out.println("Soy una ficha puesta de 3 lados");
+            System.out.println("Mis lados son:");
+            System.out.println("Lado A:"+laFichaPuesta.getladoA());
+            System.out.println("Lado B:"+laFichaPuesta.getladoB());
+            System.out.println("Lado C:"+((FichaDeTriomino) laFichaPuesta).getLadoC());
+            System.out.println("Estoy pointing up?"+ ((FichaDeTriomino) laFichaPuesta).getIsPointingUp());
+            // Si ambas son de Triomino
+            if (laFichaAColocar instanceof FichaDeTriomino) {
+                //Si la ficha que está puesta está apuntando hacia arriba, se puede intentar colocar otra de 3 lados
+                System.out.println("Soy una ficha a colocar de 3 lados");
+                if (((FichaDeTriomino) laFichaPuesta).getIsPointingUp()) {
+                    ((FichaDeTriomino) laFichaAColocar).setIsPointingUp(false);
+                    System.out.println("Mis lados son:");
+                    System.out.println("Lado A:"+laFichaAColocar.getladoA());
+                    System.out.println("Lado B:"+laFichaAColocar.getladoB());
+                    System.out.println("Lado C:"+((FichaDeTriomino) laFichaAColocar).getLadoC());
+                    System.out.println("Estoy pointing up?"+ ((FichaDeTriomino) laFichaAColocar).getIsPointingUp());
+                    if (laFichaPuesta.getladoA() == ((FichaDeTriomino) laFichaAColocar).getLadoC() && ((FichaDeTriomino) laFichaPuesta).getLadoC() == laFichaAColocar.getladoA()) {
+                        return true;
+                    }
+                    else {
+                        laFichaAColocar.rotateRight();
+                        laFichaAColocar.rotateRight();
+                        System.out.println("Se giró la ficha a colocar de 3 lados");
+                        System.out.println("Mis nuevos lados son lado A: "+laFichaAColocar.getladoA()+", Lado B: "+laFichaAColocar.getladoB()+" y lado C: "+((FichaDeTriomino) laFichaAColocar).getLadoC());
+                    }
+                    if (laFichaPuesta.getladoA() == ((FichaDeTriomino) laFichaAColocar).getLadoC() && ((FichaDeTriomino) laFichaPuesta).getLadoC() == laFichaAColocar.getladoA()) {
+                        return true;
+                    }
+                    else {
+                        laFichaAColocar.rotateRight();
+                        laFichaAColocar.rotateRight();
+                        System.out.println("Se giró la ficha a colocar de 3 lados");
+                        System.out.println("Mis nuevos lados son lado A: "+laFichaAColocar.getladoA()+", Lado B:"+laFichaAColocar.getladoB()+" y lado C"+((FichaDeTriomino) laFichaAColocar).getLadoC());
+                    }
+                    if (laFichaPuesta.getladoA() == ((FichaDeTriomino) laFichaAColocar).getLadoC()
+                            && ((FichaDeTriomino) laFichaPuesta).getLadoC() == laFichaAColocar.getladoA()) {
+                        return true;
+                    }
                 }
-                else if (laFichaPuesta.getladoA() == laFichaAColocar.getladoA() && ((FichaDeTriomino) laFichaPuesta).getLadoC() == laFichaAColocar.getladoB()) {
-                    return true;
+                else {
+                    return false;
                 }
-                else return laFichaPuesta.getladoA() == laFichaAColocar.getladoB() && ((FichaDeTriomino) laFichaPuesta).getLadoC() == ((FichaDeTriomino) laFichaAColocar).getLadoC();
-
             }
-            else if (!(laFichaAColocar instanceof FichaDeTriomino)  && !((FichaDeTriomino) laFichaPuesta).getIsPointingUp()) {
-                return laFichaPuesta.getladoB() == laFichaAColocar.getladoB() || laFichaPuesta.getladoB() == laFichaAColocar.getladoA();
+            // Si estamos intentando colocar una ficha de 2 lados
+            else {
+                System.out.println("Soy una ficha a colocar de 2 lados");
+                System.out.println("Mi lado A es:"+laFichaAColocar.getladoA());
+                System.out.println("Mi lado B es:"+laFichaAColocar.getladoB());
+                if (laFichaPuesta.getladoB() == laFichaAColocar.getladoB()) {
+                    return true;
+                }
+                else {
+                    laFichaAColocar.rotateRight();
+                    System.out.println("Se giró la ficha a colocar de 2 lados");
+                    System.out.println("Mis nuevos lados son lado A: "+laFichaAColocar.getladoA()+" y Lado B:"+laFichaAColocar.getladoB());
+                }
+                if (laFichaPuesta.getladoB() == laFichaAColocar.getladoB()) {
+                    return true;
+                }
+                else {
+                    return false;
+                }
             }
         }
         // Si solo la que colocaremos es de Triomino y la puesta es doble
         else {
+            System.out.println("Soy una ficha puesta de 2 lados");
+            System.out.println("Mis lados son:");
+            System.out.println("Lado A:"+laFichaPuesta.getladoA());
+            System.out.println("Lado B:"+laFichaPuesta.getladoB());
+            // Si la ficha que intentaremos colocar es de 3 lados
             if (laFichaAColocar instanceof FichaDeTriomino) {
-                if (laFichaPuesta.getladoA() == laFichaAColocar.getladoA() ||
-                        laFichaPuesta.getladoA() == laFichaAColocar.getladoB() ||
-                        laFichaPuesta.getladoA() == ((FichaDeTriomino) laFichaAColocar).getLadoC()) {
-                    ((FichaDeTriomino) laFichaAColocar).setIsPointingUp(true);
+                System.out.println("Soy una ficha a colocar de 3 lados");
+                ((FichaDeTriomino) laFichaAColocar).setIsPointingUp(true);
+                System.out.println("Mis lados son:");
+                System.out.println("Lado A:"+laFichaAColocar.getladoA());
+                System.out.println("Lado B:"+laFichaAColocar.getladoB());
+                System.out.println("Lado C:"+((FichaDeTriomino) laFichaAColocar).getLadoC());
+                System.out.println("Estoy pointing up?"+ ((FichaDeTriomino) laFichaAColocar).getIsPointingUp());
+                if (laFichaPuesta.getladoA() == laFichaAColocar.getladoB()) {
                     return true;
                 }
-            } else {
-                return laFichaPuesta.getladoA() == laFichaAColocar.getladoB() || laFichaPuesta.getladoA() == laFichaAColocar.getladoA();
+                else {
+                    laFichaAColocar.rotateRight();
+                    laFichaAColocar.rotateRight();
+                    System.out.println("Se giró la ficha a colocar de 3 lados");
+                    System.out.println("Mis nuevos lados son lado A: "+laFichaAColocar.getladoA()+", Lado B:"+laFichaAColocar.getladoB()+" y lado C"+((FichaDeTriomino) laFichaAColocar).getLadoC());
+                }
+                if (laFichaPuesta.getladoA() == laFichaAColocar.getladoB()) {
+                    return true;
+                }
+                else {
+                    laFichaAColocar.rotateRight();
+                    laFichaAColocar.rotateRight();
+                    System.out.println("Se giró la ficha a colocar de 3 lados");
+                    System.out.println("Mis nuevos lados son lado A: "+laFichaAColocar.getladoA()+", Lado B:"+laFichaAColocar.getladoB()+" y lado C"+((FichaDeTriomino) laFichaAColocar).getLadoC());
+                }
+                if (laFichaPuesta.getladoA() == laFichaAColocar.getladoB()) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+            // Si ambas fichas son de 2 lados
+            else {
+                System.out.println("Soy una ficha a colocar de 2 lados");
+                System.out.println("Mi lado A es:"+laFichaAColocar.getladoA());
+                System.out.println("Mi lado B es:"+laFichaAColocar.getladoB());
+                if (laFichaPuesta.getladoA() == laFichaAColocar.getladoB()) {
+                    return true;
+                }
+                else {
+                    laFichaAColocar.rotateRight();
+                    System.out.println("Se giró la ficha a colocar de 2 lados");
+                    System.out.println("Mis nuevos lados son lado A: "+laFichaAColocar.getladoA()+" y Lado B:"+laFichaAColocar.getladoB());
+                }
+                if (laFichaPuesta.getladoA() == laFichaAColocar.getladoB()) {
+                    return true;
+                }
+                else {
+                    return false;
+                }
             }
         }
         return false;
