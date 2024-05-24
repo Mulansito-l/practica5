@@ -83,19 +83,61 @@ public class MultiPieceMino{
                 ui.actualizar();
                 mostrarManos(); 
             }
+            if(rondaTerminada)
+                cliente.sendActions(accionesJugador);
             comprobarEstadoRonda();
         }
         rondaTerminada = false;
-        cliente.disconnect();
-        if(cliente.isHost())
-            servidor.stop();
-        cliente = null;
-        servidor = null;
+        if(jugadores.get(0).getPuntuacion() > jugadores.get(1).getPuntuacion()){
+            if(cliente.isHost()){
+                JOptionPane.showMessageDialog(null, "GANASTE LA PARTIDA\n--- Puntuaciones ---\nTú: " 
+                        + jugadores.get(0).getPuntuacion() + "\nRival: " + jugadores.get(1).getPuntuacion());
+            }
+            else{
+                JOptionPane.showMessageDialog(null, "PERDISTE\n--- Puntuaciones ---\nTú: " 
+                        + jugadores.get(1).getPuntuacion() + "\nRival: " + jugadores.get(0).getPuntuacion());
+
+            }
+        }else if(jugadores.get(0).getPuntuacion() < jugadores.get(1).getPuntuacion()){
+            if(!cliente.isHost()){
+                JOptionPane.showMessageDialog(null, "GANASTE LA PARTIDA\n--- Puntuaciones ---\nTú: " 
+                        + jugadores.get(1).getPuntuacion() + "\nRival: " + jugadores.get(0).getPuntuacion());
+            }
+            else{
+                JOptionPane.showMessageDialog(null, "PERDISTE\n--- Puntuaciones ---\nTú: " 
+                        + jugadores.get(0).getPuntuacion() + "\nRival: " + jugadores.get(1).getPuntuacion());
+
+            }
+        }else{
+             if(!cliente.isHost()){
+                JOptionPane.showMessageDialog(null, "EMPATE\n--- Puntuaciones ---\nTú: " 
+                        + jugadores.get(1).getPuntuacion() + "\nRival: " + jugadores.get(0).getPuntuacion());
+            }
+            else{
+                JOptionPane.showMessageDialog(null, "EMPATE\n--- Puntuaciones ---\nTú: " 
+                        + jugadores.get(0).getPuntuacion() + "\nRival: " + jugadores.get(1).getPuntuacion());
+
+            }   
+        }
+        
     }
 
     public void comprobarEstadoRonda(){
-         
-    }
+        for (Jugador player:jugadores){
+            //una ronda se termina si el jugador ya no tiene fichas y quedan 0 fichas en el pozo
+            if (player.getMano().isEmpty() && pozo.fichasRestantes()==0) {
+                rondaTerminada = true;
+
+            //ya no hay fichas en el pozo y ya nadie puede colocar
+            } else if ( pozo.fichasRestantes()==0 && turnosSaltados>=2 ) {
+                rondaTerminada = true;
+
+            //el juego puede continuar
+            } else {
+                rondaTerminada = false;
+            }
+        }
+    } 
 
     public void mostrarManos(){
         ui.getUICanvas().clearObjects();
@@ -105,6 +147,15 @@ public class MultiPieceMino{
     }
 
     public void salirPartida(){
+        if(cliente.isHost()){
+            cliente.disconnect();
+            servidor.stop();
+            cliente = null;
+            servidor = null;
+        }else{
+            cliente.disconnect();
+            cliente = null;
+        }
         jugar();
     }
 
@@ -221,9 +272,17 @@ public class MultiPieceMino{
         if (jugadorInicial == -1 ) {
             return;
         }
+        if(pozo.fichasRestantes() == 0){
+            JOptionPane.showMessageDialog(null, "Ya no hay fichas en el pozo, salte el turno");
+            tomoDelPozo = true;
+            ui.getUICanvas().cambiarTextoTomarDelPozo(tomoDelPozo);
+            ui.actualizar();
+        }
         if(tomoDelPozo){
-            turnosSaltados++;
-            accionesJugador.add(new AccionJuego.AccionAumentarTurnosSaltados());
+            if(pozo.fichasRestantes() == 0){
+                turnosSaltados++;
+                accionesJugador.add(new AccionJuego.AccionAumentarTurnosSaltados());
+            }
             pasarTurno();
             cliente.sendActions(accionesJugador);
             System.out.println("Mandando acciones"); 
@@ -479,7 +538,6 @@ public class MultiPieceMino{
         }else{
             if(cliente.isHost()){
                 int index = jugadores.get(0).getMano().indexOf(fichaSostenida);
-                int sumaPuntosFicha = fichaSostenida.obtenerSuma();
                 if(tablero.colocarFichaEn(pos.x, pos.y, jugadores.get(0), index)){
                     turnosSaltados = 0;
                     accionesJugador.add(new AccionJuego.AccionColocarFicha(index
@@ -497,7 +555,6 @@ public class MultiPieceMino{
             }
             else{
                 int index = jugadores.get(1).getMano().indexOf(fichaSostenida);
-                int sumaPuntosFicha = fichaSostenida.obtenerSuma();
                 if(tablero.colocarFichaEn(pos.x, pos.y, jugadores.get(1), index)){
                     turnosSaltados = 0;
                     accionesJugador.add(new AccionJuego.AccionColocarFicha(index
@@ -539,7 +596,7 @@ public class MultiPieceMino{
     }
 
     public void recorrerFichasIzquierda(){
-if (cliente.isHost()) {
+        if (cliente.isHost()) {
             jugadores.get(0).moverManoIzquierda();
         }else {
             jugadores.get(1).moverManoIzquierda();

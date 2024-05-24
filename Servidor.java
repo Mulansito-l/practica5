@@ -75,7 +75,7 @@ public class Servidor {
 
     public void stop(){
         try{
-            serverSocket.close();
+        serverSocket.close();
         }catch(IOException e){
             System.out.println(e);
         }

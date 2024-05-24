@@ -11,6 +11,7 @@ public class Ficha implements Movible{
     protected int posY;
     protected Sprite imagen;
     protected Sprite imagenVolteada;
+    protected boolean ocupada;
 
     //Constructores
     public Ficha()
@@ -21,6 +22,7 @@ public class Ficha implements Movible{
         if (ladoA==ladoB){
             esMula=true;
         }
+        ocupada = false;
     }
     public Ficha(int ladoAPersonalizado, int ladoBPersonalizado)
     {
@@ -35,6 +37,15 @@ public class Ficha implements Movible{
         String imageName = "recursos/DoVolteada.png";
         this.imagenVolteada= new Sprite(imageName, 0, 0);
         this.imagenVolteada.changeSize(100);
+        ocupada = false;
+    }
+
+    public void setOcupada(boolean ocupada) {
+        this.ocupada = ocupada;
+    }
+
+    public boolean isOcupada() {
+        return ocupada;
     }
 
     public Ficha(Ficha ficha){
@@ -53,14 +64,14 @@ public class Ficha implements Movible{
         int temp = ladoA;
         ladoA = ladoB;
         ladoB = temp;
-        imagen.rotate(180);
+        imagen.añadirRotacion(180);
     }
 
     public void rotateLeft(){
         int temp = ladoB;
         ladoB = ladoA;
         ladoA = temp;
-        imagen.rotate(-180);
+        imagen.añadirRotacion(-180);
     }
 
     public void setImagen(Sprite imagen) {
@@ -96,22 +107,22 @@ public class Ficha implements Movible{
     }
 
     //Getters y setters
-    public void setladoA (int ladoA)
+    public void setLadoA (int ladoA)
     {
         this.ladoA=ladoA;
     }
 
-    public void setladoB (int ladoB)
+    public void setLadoB (int ladoB)
     {
         this.ladoB=ladoB;
     }
 
-    public int getladoA (){
+    public int getLadoA (){
 
         return ladoA;
     }
 
-    public int getladoB (){
+    public int getLadoB (){
 
         return ladoB;
     }

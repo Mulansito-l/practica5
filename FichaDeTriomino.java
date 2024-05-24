@@ -47,40 +47,39 @@ public class FichaDeTriomino extends Ficha{
     public void rotateRight(){
         if (isPointingUp){
             int newLadoC=ladoB;
-
             ladoB= ladoC;
             ladoC=newLadoC;
             isPointingUp=false;
-            //imagen.rotate(59);
+            imagen.añadirRotacion(60);
         }
         else {
             int newLadoA=ladoB;
-
             ladoB= ladoA;
             ladoA=newLadoA;
             isPointingUp=true;
-            //imagen.rotate(59);
+            imagen.añadirRotacion(60);
         }
-
+        System.out.println(imagen);
     }
 
     public void rotateLeft(){
         if (isPointingUp){
             int newLadoA=ladoB;
-
             ladoB= ladoA;
             ladoA=newLadoA;
             isPointingUp=false;
-            //imagen.rotate(-59);
+            imagen.añadirRotacion(60);
+            imagen.setVisible(true);
         }
         else {
             int newLadoC=ladoB;
-
             ladoB= ladoC;
             ladoC=newLadoC;
             isPointingUp=true;
-            //imagen.rotate(-59);
+            imagen.añadirRotacion(60);
+            imagen.setVisible(true);
         }
+        System.out.println(true);
     }
 
 
