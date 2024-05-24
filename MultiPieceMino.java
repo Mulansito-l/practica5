@@ -27,6 +27,7 @@ public class MultiPieceMino{
     private Ficha fichaInicial;
     private int turnoActual;
     private boolean tomoDelPozo;
+    private int turnosSaltados;
 
     MultiPieceMino(){
         ui = new Interfaz(); 
@@ -35,7 +36,7 @@ public class MultiPieceMino{
         cliente = null;
         accionesJugador = new ArrayList<AccionJuego>();
         fichaSostenida = null;
-        cuadroEspera = new Sprite("recursos/espera.png", 960, 540);
+        cuadroEspera = new Sprite("recursos/espera.png", 384, 296);
     } 
 
     public void jugar(){
@@ -46,15 +47,13 @@ public class MultiPieceMino{
 
     public void jugarPartida(){
         prepararPartida();
-        while (!juegoTerminado) {
-            if(cliente.isHost())
-                prepararRonda();
-            while(jugadorInicial == -1){
-                determinarJugadorInicial();
-            }
-            jugarRonda();
-            //comprobarJuego();
-        } 
+        if(cliente.isHost())
+            prepararRonda();
+        while(jugadorInicial == -1){
+            determinarJugadorInicial();
+        }
+        jugarRonda();
+        salirPartida();
     }
 
     public void prepararPartida(){
@@ -64,8 +63,6 @@ public class MultiPieceMino{
             accionesJugador.add(new AccionJuego.AccionSetJugadorInicial(jugadorInicial));
             juegoTerminado = false;
             accionesJugador.add(new AccionJuego.AccionSetJuegoTerminado(juegoTerminado));
-            puntosMax = Integer.parseInt(JOptionPane.showInputDialog("Ingrese el máximo de puntos:"));
-            accionesJugador.add(new AccionJuego.AccionGuardarPuntosMax(puntosMax));
             jugadores = new ArrayList<Jugador>();
             jugadores.add(new Jugador());
             jugadores.add(new Jugador());
@@ -85,11 +82,19 @@ public class MultiPieceMino{
                 tablero.dibujar(ui.getTableroCanvas());
                 ui.actualizar();
                 mostrarManos(); 
-                System.out.println("Mano Jugador 1: " + jugadores.get(0).getMano());
-                System.out.println("Mano Jugador 2: " + jugadores.get(1).getMano());
-                System.out.println("Tablero" + tablero);
             }
+            comprobarEstadoRonda();
         }
+        rondaTerminada = false;
+        cliente.disconnect();
+        if(cliente.isHost())
+            servidor.stop();
+        cliente = null;
+        servidor = null;
+    }
+
+    public void comprobarEstadoRonda(){
+         
     }
 
     public void mostrarManos(){
@@ -97,6 +102,10 @@ public class MultiPieceMino{
         jugadores.get(0).mostrarMano(cliente.isHost(), 0, ui.getUICanvas());
         jugadores.get(1).mostrarMano(cliente.isHost(), 1, ui.getUICanvas());
         ui.getUICanvas().redraw();
+    }
+
+    public void salirPartida(){
+        jugar();
     }
 
     public void determinarJugadorInicial(){
@@ -126,6 +135,12 @@ public class MultiPieceMino{
                 turnoActual = 0;
             }
             if (jugadorInicial != -1){
+                if(jugadorInicial == 0){
+                
+                }
+                else{
+                
+                }
                 accionesJugador.add(new AccionJuego.AccionSetJugadorInicial(jugadorInicial));
                 cliente.sendActions(accionesJugador);
             }
@@ -171,15 +186,20 @@ public class MultiPieceMino{
         }else{
             cliente.sendActions(accionesJugador);
         }
+        if(jugadorInicial == 0){
+            jugadores.get(0).aumentarPuntuacion(puntosFichaInicialHost);
+        }else{
+            jugadores.get(1).aumentarPuntuacion(puntosFichaInicialInvitado);
+        }
         tablero.dibujar(ui.getTableroCanvas());
         mostrarManos();
         System.out.println("TERMINADO DE SELECCIONAR QUIEN EMPIEZA");
-        System.out.println("Jugador 1: " + jugadores.get(0).getMano());
-        System.out.println("Jugador 2: " + jugadores.get(1).getMano());
-        System.out.println("Tablero: " + tablero);
+        System.out.println("Puntos jugador 1: " + jugadores.get(0).getPuntuacion());
+        System.out.println("Puntos jugador 2: " + jugadores.get(1).getPuntuacion());
     } 
 
     public void prepararRonda(){
+        turnosSaltados = 0;
         tomoDelPozo = false;
         rondaTerminada = false;
         accionesJugador.add(new AccionJuego.AccionSetRondaTerminada(rondaTerminada));
@@ -202,6 +222,8 @@ public class MultiPieceMino{
             return;
         }
         if(tomoDelPozo){
+            turnosSaltados++;
+            accionesJugador.add(new AccionJuego.AccionAumentarTurnosSaltados());
             pasarTurno();
             cliente.sendActions(accionesJugador);
             System.out.println("Mandando acciones"); 
@@ -251,6 +273,7 @@ public class MultiPieceMino{
         mostrarManos();
         ui.getUICanvas().cambiarTextoTomarDelPozo(tomoDelPozo);
         ui.actualizar();
+        System.out.println("Pozo: " + pozo);
     }
 
     public void salaEspera(){
@@ -267,11 +290,7 @@ public class MultiPieceMino{
     public void menuPrincipal(){
         ui.mostrarMenuPrincipal(); 
         while (cliente == null) {
-            if (cliente != null) {
-                while (!cliente.isConnected()) {
-                
-            }
-            }
+            
         }
     }
 
@@ -347,11 +366,13 @@ public class MultiPieceMino{
                     System.out.println("Quitado ficha del Invitado");
                 }else if(a.isHost() && jugadorInicial != -1){
                     tablero.colocarFichaEn(a.getX(), a.getY(), jugadores.get(0), a.getIndex());
+                    turnosSaltados = 0;
                     mostrarManos();
                     System.out.println("Mano jugador 1: " + jugadores.get(0).getMano());
                     System.out.println("Mano jugador 2: " + jugadores.get(1).getMano());
                 }else if(!a.isHost() && jugadorInicial != -1){
                     tablero.colocarFichaEn(a.getX(), a.getY(), jugadores.get(1), a.getIndex());
+                    turnosSaltados = 0;
                     mostrarManos();
                     System.out.println("Mano jugador 1: " + jugadores.get(0).getMano());
                     System.out.println("Mano jugador 2: " + jugadores.get(1).getMano());
@@ -385,6 +406,8 @@ public class MultiPieceMino{
                         jugadores.get(1).getMano().add(ficha);
                     }
                 }
+            }else if(accionJuego instanceof AccionJuego.AccionAumentarTurnosSaltados a){
+                turnosSaltados++;
             }
         }
     }
@@ -456,7 +479,9 @@ public class MultiPieceMino{
         }else{
             if(cliente.isHost()){
                 int index = jugadores.get(0).getMano().indexOf(fichaSostenida);
+                int sumaPuntosFicha = fichaSostenida.obtenerSuma();
                 if(tablero.colocarFichaEn(pos.x, pos.y, jugadores.get(0), index)){
+                    turnosSaltados = 0;
                     accionesJugador.add(new AccionJuego.AccionColocarFicha(index
                                 ,cliente.isHost(), pos.x, pos.y, false));
                     jugadores.get(0).getMano().remove(fichaSostenida);
@@ -472,7 +497,9 @@ public class MultiPieceMino{
             }
             else{
                 int index = jugadores.get(1).getMano().indexOf(fichaSostenida);
+                int sumaPuntosFicha = fichaSostenida.obtenerSuma();
                 if(tablero.colocarFichaEn(pos.x, pos.y, jugadores.get(1), index)){
+                    turnosSaltados = 0;
                     accionesJugador.add(new AccionJuego.AccionColocarFicha(index
                                 , cliente.isHost(), pos.x, pos.y, false));
                     jugadores.get(1).getMano().remove(fichaSostenida);

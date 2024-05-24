@@ -1,5 +1,6 @@
 public class FichaDeTriomino extends Ficha{
     private int ladoC;
+    private boolean isPointingUp; 
 
     FichaDeTriomino (){
         super();
@@ -8,11 +9,13 @@ public class FichaDeTriomino extends Ficha{
     FichaDeTriomino(int ladoA,int ladoB,int ladoC){
         super(ladoA,ladoB);
         this.ladoC=ladoC;
+        isPointingUp=true;
     }
 
     FichaDeTriomino(FichaDeTriomino ficha){
         super(ficha);
         this.ladoC = ficha.ladoC;
+        this.isPointingUp=ficha.isPointingUp;
     }
     public int getLadoC() {
         return ladoC;
@@ -25,6 +28,51 @@ public class FichaDeTriomino extends Ficha{
     public int obtenerSuma(){
         return ladoA + ladoB + ladoC;
     }
+
+    public boolean getIsPointingUp(){
+        return isPointingUp;
+    }
+
+    public void setIsPointingUp(boolean isPointingUp){
+        this.isPointingUp=isPointingUp;
+    }
+
+    public void rotateRight(){
+        if (isPointingUp){
+            int newLadoC=ladoB;
+
+            ladoB= ladoC;
+            ladoC=newLadoC;
+            isPointingUp=false;
+        }
+        else {
+            int newLadoA=ladoB;
+
+            ladoB= ladoA;
+            ladoA=newLadoA;
+            isPointingUp=true;
+        }
+
+    }
+
+    public void rotateLeft(){
+        if (isPointingUp){
+            int newLadoA=ladoB;
+
+            ladoB= ladoA;
+            ladoA=newLadoA;
+            isPointingUp=false;
+        }
+        else {
+            int newLadoC=ladoB;
+
+            ladoB= ladoC;
+            ladoC=newLadoC;
+            isPointingUp=true;
+        }
+
+    }
+
 
     public String toString() {
         return "["+ladoA+" | "+ladoB+" | "+ladoC+"]";

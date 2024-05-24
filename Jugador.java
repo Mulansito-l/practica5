@@ -4,11 +4,12 @@ public class Jugador {
     private ArrayList<Ficha> mano;
     private int manoMin;
     private int manoMax;
-
+    private int puntuacion;
 
     Jugador(){
         manoMin = 0;
         manoMax = 14;
+        puntuacion = 0; 
     }
     
     public void setMano(ArrayList<Ficha> mano) {
@@ -17,6 +18,14 @@ public class Jugador {
 
     public ArrayList<Ficha> getMano() {
         return mano;
+    }
+
+    public int getPuntuacion() {
+        return puntuacion;
+    }
+
+    public void aumentarPuntuacion(int puntos){
+        puntuacion += puntos;
     }
 
     public void mostrarMano(boolean isHost, int jugador, Interfaz.Canvas canvasUI){

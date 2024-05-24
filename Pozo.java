@@ -12,8 +12,6 @@ public class Pozo {
         fichas=new ArrayList<Ficha>();
         fichas2Lados=new ArrayList<Ficha>();
         fichas3Lados=new ArrayList<FichaDeTriomino>();
-        generarFichasDe2Lados();
-        generarFichasDe3Lados();
         añadirTodasLasFichasALPozo();
     }
     private void generarFichasDe2Lados(){
@@ -38,6 +36,11 @@ public class Pozo {
             }
         }
     }
+
+    public int fichasRestantes(){
+        return fichas.size();
+    }
+
     private void añadirTodasLasFichasALPozo(){
         generarFichasDe2Lados();
         generarFichasDe3Lados();

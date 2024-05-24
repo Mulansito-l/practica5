@@ -175,4 +175,10 @@ public class AccionJuego implements Serializable{
             return fichasTomadas;
         }
     }
+
+    public static class AccionAumentarTurnosSaltados extends AccionJuego{
+        AccionAumentarTurnosSaltados(){
+            
+        }
+    }
 }

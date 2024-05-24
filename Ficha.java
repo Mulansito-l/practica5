@@ -43,11 +43,17 @@ public class Ficha implements Movible{
     }
 
     public void rotateRight(){
-        
+        int temp = ladoA;
+        ladoA = ladoB;
+        ladoB = temp;
+        imagen.rotate(180);
     }
 
     public void rotateLeft(){
-        
+        int temp = ladoB;
+        ladoB = ladoA;
+        ladoA = temp;
+        imagen.rotate(-180);
     }
 
     public void setImagen(Sprite imagen) {

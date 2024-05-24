@@ -46,12 +46,52 @@ public class Tablero {
         Ficha fichaAColocar = jugador.getMano().get(index);
         if(!fichaAColocar.esVisible())
             fichaAColocar.esVisible();
-        fichaAColocar.getImagen().rotate(90);
-        fichaAColocar.setPos(masCercana.getPosX() + 80, masCercana.getPosY());
-        fichasJugadas.add(fichaAColocar);
-        jugador.getMano().remove(fichaAColocar);
-        return true;
+        if (!sePudoColocar(fichaAColocar, masCercana)) {
+            return false;
+        }
+        else {
+            fichaAColocar.setPos(masCercana.getPosX(), masCercana.getPosY() + 150);
+            fichasJugadas.add(fichaAColocar);
+            jugador.getMano().remove(fichaAColocar);
+            return true;
+        }
     }
+
+    private boolean sePudoColocar(Ficha laFichaAColocar, Ficha laFichaPuesta){
+
+        if ((laFichaPuesta instanceof FichaDeTriomino)) {
+            // Si ambas son de Triomino y la ficha que está puesta está apuntando hacia arriba
+            if (laFichaAColocar instanceof FichaDeTriomino && ((FichaDeTriomino) laFichaPuesta).getIsPointingUp()) {
+                ((FichaDeTriomino) laFichaAColocar).setIsPointingUp(false);
+                if (laFichaPuesta.getladoA() == ((FichaDeTriomino) laFichaAColocar).getLadoC() && ((FichaDeTriomino) laFichaPuesta).getLadoC() == laFichaAColocar.getladoA()) {
+                    return true;
+                }
+                else if (laFichaPuesta.getladoA() == laFichaAColocar.getladoA() && ((FichaDeTriomino) laFichaPuesta).getLadoC() == laFichaAColocar.getladoB()) {
+                    return true;
+                }
+                else return laFichaPuesta.getladoA() == laFichaAColocar.getladoB() && ((FichaDeTriomino) laFichaPuesta).getLadoC() == ((FichaDeTriomino) laFichaAColocar).getLadoC();
+
+            }
+            else if (!(laFichaAColocar instanceof FichaDeTriomino)  && !((FichaDeTriomino) laFichaPuesta).getIsPointingUp()) {
+                return laFichaPuesta.getladoB() == laFichaAColocar.getladoB() || laFichaPuesta.getladoB() == laFichaAColocar.getladoA();
+            }
+        }
+        // Si solo la que colocaremos es de Triomino y la puesta es doble
+        else {
+            if (laFichaAColocar instanceof FichaDeTriomino) {
+                if (laFichaPuesta.getladoA() == laFichaAColocar.getladoA() ||
+                        laFichaPuesta.getladoA() == laFichaAColocar.getladoB() ||
+                        laFichaPuesta.getladoA() == ((FichaDeTriomino) laFichaAColocar).getLadoC()) {
+                    ((FichaDeTriomino) laFichaAColocar).setIsPointingUp(true);
+                    return true;
+                }
+            } else {
+                return laFichaPuesta.getladoA() == laFichaAColocar.getladoB() || laFichaPuesta.getladoA() == laFichaAColocar.getladoA();
+            }
+        }
+        return false;
+    }
+ 
 
     @Override
     public String toString() {

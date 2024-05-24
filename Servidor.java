@@ -72,4 +72,12 @@ public class Servidor {
             e.printStackTrace();
         }
     }
+
+    public void stop(){
+        try{
+            serverSocket.close();
+        }catch(IOException e){
+            System.out.println(e);
+        }
+    }
 }
